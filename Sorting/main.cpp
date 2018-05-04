@@ -3,6 +3,8 @@
 #include <vector>
 #include <time.h>
 #include <cstdlib>
+#include "Sorter.h"
+#include "Bubble_Sort.h"
 
 using namespace std;
 
@@ -23,6 +25,11 @@ vector<int> radix_sort(vector<int> data);
 
 int main(void)
 {
+
+	Bubble_Sort bubble{};
+
+	bubble.show_sort();
+
 	for (int i = 100; i <= 3200; i *= 2)
 	{
 		benchmark_sort(i);
@@ -50,9 +57,11 @@ vector<int> getRandomNumbers(int amount, int lower, int upper)
 
 void benchmark_sort(int amount)
 {
+	Bubble_Sort bubble{};
+
 	vector<int> to_sort = getRandomNumbers(amount, 0, 1000);
 	int start = clock();
-	bubble_sort(to_sort);
+	bubble.sort(to_sort);
 	int end = clock();
 	cout << "Bubble Sort on " << amount << " elements: " << end - start << endl;
 
