@@ -5,10 +5,9 @@
 #include <vector>
 #include "Sorter.h"
 
-class Bubble_Sort : Sorter
+class Bubble_Sort : public Sorter
 {
 public:
-	string name = "Bubble Sort";
 
 	virtual vector<int> sort(vector<int> data)
 	{

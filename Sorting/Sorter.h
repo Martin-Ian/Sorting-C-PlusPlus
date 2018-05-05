@@ -9,7 +9,6 @@ using namespace std;
 class Sorter
 {
 public:
-	string name = "Undefined Sort";
 
 	//This function will sort 'data' and return the sorted data
 	virtual vector<int> sort(vector<int> data)

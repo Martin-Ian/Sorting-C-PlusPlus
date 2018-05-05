@@ -3,6 +3,7 @@
 #include <vector>
 #include <time.h>
 #include <cstdlib>
+#include <unordered_map>
 #include "Sorter.h"
 #include "Bubble_Sort.h"
 
@@ -12,7 +13,7 @@ using namespace std;
 vector<int> getRandomNumbers(int amount, int lower, int upper);
 
 //Benchmarking
-void benchmark_sort(int amount);
+void benchmark_sort();
 
 //Bubble Sort
 vector<int> bubble_sort(vector<int> data);
@@ -25,16 +26,51 @@ vector<int> radix_sort(vector<int> data);
 
 int main(void)
 {
+	vector<pair<string, Sorter*>*> sorters{};
+	vector<Sorter*> sorter_choices{};
+	//Note, not ideal, but it works
+	sorters.push_back(new pair<string, Sorter*>{ "Bubble Sort", new Bubble_Sort{} });
 
-	Bubble_Sort bubble{};
-
-	bubble.show_sort();
-
-	for (int i = 100; i <= 3200; i *= 2)
+	cout << "Welcome to Ian's sorts! (Last updated 5/4/18)" << endl;
+	bool choice_made = false;
+	
+	//Loops until a choice is made
+	do
 	{
-		benchmark_sort(i);
-	}
+		cout << "What would you like to do?" << endl;
+		cout << "*[0] Benchmark Sorts" << endl;
+		cout << "*[1] Learn how a sorting algorithm works" << endl;
+		cout << "*[-1] Exit program" << endl;
+		string responce;
+		getline(cin, responce);
 
+		switch (responce[0])
+		{
+		case '0':
+			choice_made = true;
+			benchmark_sort();
+			break;
+		case '1':
+			choice_made = true;
+			//learn_sorts();
+			break;
+		case '-': //-1
+			choice_made = true;
+			cout << "Thank you!" << endl;
+			return 0;
+			break;
+		default:
+			cout << "I didn't understand that." << endl;
+			break;
+		}
+
+		for (int i = 0; i < sorters.size(); i++)
+		{
+			cout << "*[" << i << "] " << sorters[i]->first << endl;
+		}
+	} while (choice_made == false);
+
+	benchmark_sort();
 	return 0;
 }
 
@@ -55,27 +91,25 @@ vector<int> getRandomNumbers(int amount, int lower, int upper)
 	return random_numbers;
 }
 
-void benchmark_sort(int amount)
+void benchmark_sort()
 {
-	Bubble_Sort bubble{};
+	unordered_map<string, Sorter*> sorters{};
+	sorters["Bubble Sort"] = new Bubble_Sort();
 
-	vector<int> to_sort = getRandomNumbers(amount, 0, 1000);
-	int start = clock();
-	bubble.sort(to_sort);
-	int end = clock();
-	cout << "Bubble Sort on " << amount << " elements: " << end - start << endl;
+	for (int i = 100; i <= 3600; i *= 2)
+	{
+		vector<int> to_sort = getRandomNumbers(i, 0, 1000);
+		int start;
+		int end;
 
-	start = clock();
-	insertion_sort(to_sort);
-	end = clock();
-	cout << "Insertion Sort on " << amount << " elements: " << end - start << endl;
-
-	start = clock();
-	radix_sort(to_sort);
-	end = clock();
-	cout << "Radix Sort on " << amount << " elements: " << end - start << endl;
-
-	cout << endl;
+		for (auto sorter : sorters)
+		{
+			start = clock();
+			sorter.second->sort(to_sort);
+			end = clock();
+			cout << sorter.first << " on " << to_sort.size() << " elements: " << end - start << endl;
+		}
+	}
 }
 
 vector<int> bubble_sort(vector<int> data)
