@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include "Sorter.h"
 #include "Bubble_Sort.h"
+#include "Insertion_Sort.h"
 
 using namespace std;
 
@@ -14,12 +15,6 @@ vector<int> getRandomNumbers(int amount, int lower, int upper);
 
 //Benchmarking
 void benchmark_sort();
-
-//Bubble Sort
-vector<int> bubble_sort(vector<int> data);
-
-//insertion Sort
-vector<int> insertion_sort(vector<int> data);
 
 //Radix sort
 vector<int> radix_sort(vector<int> data);
@@ -30,6 +25,7 @@ int main(void)
 	vector<Sorter*> sorter_choices{};
 	//Note, not ideal, but it works
 	sorters.push_back(new pair<string, Sorter*>{ "Bubble Sort", new Bubble_Sort{} });
+	sorters.push_back(new pair<string, Sorter*>{ "Insertion Sort", new Insertion_Sort{} });
 
 	cout << "Welcome to Ian's sorts! (Last updated 5/4/18)" << endl;
 	bool choice_made = false;
@@ -63,14 +59,8 @@ int main(void)
 			cout << "I didn't understand that." << endl;
 			break;
 		}
-
-		for (int i = 0; i < sorters.size(); i++)
-		{
-			cout << "*[" << i << "] " << sorters[i]->first << endl;
-		}
 	} while (choice_made == false);
 
-	benchmark_sort();
 	return 0;
 }
 
@@ -95,6 +85,7 @@ void benchmark_sort()
 {
 	unordered_map<string, Sorter*> sorters{};
 	sorters["Bubble Sort"] = new Bubble_Sort();
+	sorters["Insertion Sort"] = new Insertion_Sort();
 
 	for (int i = 100; i <= 3600; i *= 2)
 	{
@@ -109,57 +100,8 @@ void benchmark_sort()
 			end = clock();
 			cout << sorter.first << " on " << to_sort.size() << " elements: " << end - start << endl;
 		}
+		cout << endl;
 	}
-}
-
-vector<int> bubble_sort(vector<int> data)
-{
-	//tracks if it needs more sorting
-	bool is_sorted = false;
-
-	while (is_sorted == false)
-	{
-		is_sorted = true;
-
-		//Go through each data point
-		for (int i = 0; i < data.size() - 1; i++)
-		{
-			//If a number is greater than the next number, swap them
-			if (data[i] > data[i + 1])
-			{
-				//swap and set is_sorted to false
-				is_sorted = false;
-				int temp = data[i];
-				data[i] = data[i + 1];
-				data[i + 1] = temp;
-			}
-		}
-	}
-
-	return data;
-}
-
-vector<int> insertion_sort(vector<int> data)
-{
-	//Iterates front to back of data
-	int i = 1;
-	while (i < data.size())
-	{
-		//itterates 'back' to front of list
-		int j = i - 1;
-		int val = data[i];
-		while (j > -1 && data[j] > val)
-		{
-			//Swap if greater
-			data[j + 1] = data[j];
-			j--;
-		}
-		//replace temp value
-		data[j + 1] = val;
-		i++;
-	}
-
-	return data;
 }
 
 vector<int> radix_sort(vector<int> data)
